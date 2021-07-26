@@ -30,9 +30,11 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.opencsv.bean.CsvToBeanBuilder;
 
+import javax.inject.Inject;
 import java.io.*;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +45,8 @@ import java.util.List;
  * See README for more info.
  */
 public class RunInventoryReport {
+    @Inject
+    private static DashboardReportRepository dashboardReportRepository;
 
     private static class RunInventoryReportParams extends CodeSampleParams {
         @Parameter(
@@ -133,50 +137,25 @@ public class RunInventoryReport {
 
             beans.forEach(obj -> {
                 System.out.println(obj.toString());
-            });
+                DashboardReport dashboardReport = new DashboardReport();
+                Date date1;
+                try {
+                    date1 = new SimpleDateFormat("dd/MM/yyyy").parse(obj.getDate());
+                    dashboardReport.setDimension_DATE(date1);
+                    dashboardReport.setTOTAL_INVENTORY_LEVEL_UNFILLED_IMPRESSIONS(obj.getUnfilledImpression());
+                    dashboardReport.setAD_SERVER_CLICKS(obj.getClicks());
+                    dashboardReport.setTOTAL_AD_REQUESTS(obj.getAdRequest());
+                    dashboardReport.setTOTAL_LINE_ITEM_LEVEL_CPM_AND_CPC_REVENUE(obj.getRevenue());
+                    dashboardReport.setTOTAL_RESPONSES_SERVED(obj.getServed());
+                    dashboardReport.setTOTAL_LINE_ITEM_LEVEL_IMPRESSIONS(obj.getImpression());
+                    dashboardReportRepository.save(dashboardReport);
 
-
-            // Read Saved CSV FILE
-            BufferedReader fileReader = null;
-            System.out.println("bufferedReader = " + fileReader);
-            try {
-                String line = "";
-                String filePath = file.toString();
-                System.out.println("filePath = " + filePath);
-
-                File mainFile = new File(filePath);
-                System.out.println("mainFile = " + mainFile);
-                if (mainFile.exists()) {
-                    fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), "UTF8"));
-                    fileReader.readLine();
-                    while ((line = fileReader.readLine()) != null) {
-                        String[] tokens = line.split("\\,");
-                        System.out.println("tokens = " + tokens);
-                        System.out.println("\n\n");
-                        String Dimension_DATE = tokens[0];
-                        System.out.println("Dimension_DATE = " + Dimension_DATE);
-                        String TOTAL_INVENTORY_LEVEL_UNFILLED_IMPRESSIONS = tokens[1];
-                        System.out.println("TOTAL_INVENTORY_LEVEL_UNFILLED_IMPRESSIONS = " + TOTAL_INVENTORY_LEVEL_UNFILLED_IMPRESSIONS);
-                        String TOTAL_LINE_ITEM_LEVEL_IMPRESSIONS = tokens[2];
-                        System.out.println("TOTAL_LINE_ITEM_LEVEL_IMPRESSIONS = " + TOTAL_LINE_ITEM_LEVEL_IMPRESSIONS);
-                        String TOTAL_LINE_ITEM_LEVEL_CLICKS = tokens[3];
-                        System.out.println("TOTAL_LINE_ITEM_LEVEL_CLICKS = " + TOTAL_LINE_ITEM_LEVEL_CLICKS);
-                        String TOTAL_LINE_ITEM_LEVEL_CPM_AND_CPC_REVENUE = tokens[4];
-                        System.out.println("TOTAL_LINE_ITEM_LEVEL_CPM_AND_CPC_REVENUE = " + TOTAL_LINE_ITEM_LEVEL_CPM_AND_CPC_REVENUE);
-                        String TOTAL_AD_REQUESTS = tokens[5];
-                        System.out.println("TOTAL_AD_REQUESTS = " + TOTAL_AD_REQUESTS);
-                        String TOTAL_RESPONSES_SERVED = tokens[6];
-                        System.out.println("TOTAL_RESPONSES_SERVED = " + TOTAL_RESPONSES_SERVED);
-                    }
+                } catch (Exception e){
+                    System.out.println("e = " + e);
                 }
 
 
-            } catch (Exception e) {
-                System.out.println("Error in CsvFileReader !!!");
-                System.out.println("e = " + e);
-                e.printStackTrace();
-            }
-
+            });
 
         } catch (IOException e) {
             System.err.printf("Request failed unexpectedly due to IOException: %s%n", e);
