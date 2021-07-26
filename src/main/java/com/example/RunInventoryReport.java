@@ -3,6 +3,7 @@ package com.example;
 import static com.google.api.ads.common.lib.utils.Builder.DEFAULT_CONFIGURATION_FILENAME;
 
 import com.beust.jcommander.Parameter;
+import com.example.domain.DashboardReport;
 import com.google.api.ads.admanager.axis.factory.AdManagerServices;
 import com.google.api.ads.admanager.axis.utils.v202105.ReportDownloader;
 import com.google.api.ads.admanager.axis.utils.v202105.StatementBuilder;
@@ -15,7 +16,6 @@ import com.google.api.ads.admanager.axis.v202105.ExportFormat;
 import com.google.api.ads.admanager.axis.v202105.ReportDownloadOptions;
 import com.google.api.ads.admanager.axis.v202105.ReportJob;
 import com.google.api.ads.admanager.axis.v202105.ReportQuery;
-import com.google.api.ads.admanager.axis.v202105.ReportQueryAdUnitView;
 import com.google.api.ads.admanager.axis.v202105.ReportServiceInterface;
 import com.google.api.ads.admanager.lib.client.AdManagerSession;
 import com.google.api.ads.admanager.lib.utils.examples.ArgumentNames;
@@ -34,8 +34,6 @@ import javax.inject.Inject;
 import java.io.*;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -135,13 +133,12 @@ public class RunInventoryReport {
                     .build()
                     .parse();
 
-            beans.forEach(obj -> {
+            for (Dashboard1 obj : beans) {
                 System.out.println(obj.toString());
-                DashboardReport dashboardReport = new DashboardReport();
-                Date date1;
                 try {
-                    date1 = new SimpleDateFormat("dd/MM/yyyy").parse(obj.getDate());
-                    dashboardReport.setDimension_DATE(date1);
+                    DashboardReport dashboardReport = new DashboardReport();
+                    dashboardReport.setId(1);
+                    dashboardReport.setDimension_DATE(obj.getDate());
                     dashboardReport.setTOTAL_INVENTORY_LEVEL_UNFILLED_IMPRESSIONS(obj.getUnfilledImpression());
                     dashboardReport.setAD_SERVER_CLICKS(obj.getClicks());
                     dashboardReport.setTOTAL_AD_REQUESTS(obj.getAdRequest());
@@ -149,13 +146,12 @@ public class RunInventoryReport {
                     dashboardReport.setTOTAL_RESPONSES_SERVED(obj.getServed());
                     dashboardReport.setTOTAL_LINE_ITEM_LEVEL_IMPRESSIONS(obj.getImpression());
                     dashboardReportRepository.save(dashboardReport);
-
-                } catch (Exception e){
+                } catch (Exception e) {
+                    System.out.println("Error in data save");
                     System.out.println("e = " + e);
+                    e.printStackTrace();
                 }
-
-
-            });
+            }
 
         } catch (IOException e) {
             System.err.printf("Request failed unexpectedly due to IOException: %s%n", e);
