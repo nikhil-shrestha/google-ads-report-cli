@@ -1,27 +1,27 @@
 package com.example;
 
-import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
 
 public class Dashboard1 {
-  @CsvBindByName(column = "Dimension.DATE")
+  @CsvBindByPosition(position = 0)
   private String date;
 
-  @CsvBindByName(column = "Column.TOTAL_INVENTORY_LEVEL_UNFILLED_IMPRESSIONS")
+  @CsvBindByPosition(position = 1)
   private String unfilledImpression;
 
-  @CsvBindByName(column = "Column.TOTAL_LINE_ITEM_LEVEL_IMPRESSIONS")
+  @CsvBindByPosition(position = 2)
   private String impression;
 
-  @CsvBindByName(column = "Column.TOTAL_LINE_ITEM_LEVEL_CLICKS")
+  @CsvBindByPosition(position = 3)
   private String clicks;
 
-  @CsvBindByName(column = "Column.TOTAL_LINE_ITEM_LEVEL_CPM_AND_CPC_REVENUE")
+  @CsvBindByPosition(position = 4)
   private String revenue;
 
-  @CsvBindByName(column = "Column.TOTAL_AD_REQUESTS")
+  @CsvBindByPosition(position = 5)
   private String adRequest;
 
-  @CsvBindByName(column = "Column.TOTAL_RESPONSES_SERVED")
+  @CsvBindByPosition(position = 6)
   private String served;
 
   public String getDate() {
