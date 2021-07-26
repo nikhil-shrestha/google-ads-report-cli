@@ -24,13 +24,14 @@ import com.google.api.ads.common.lib.auth.OfflineCredentials.Api;
 import com.google.api.ads.common.lib.conf.ConfigurationLoadException;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
-import com.google.api.ads.common.lib.utils.CsvFiles;
 import com.google.api.ads.common.lib.utils.examples.CodeSampleParams;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import com.opencsv.bean.CsvToBeanBuilder;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -121,6 +122,22 @@ public class RunInventoryReport {
     Resources.asByteSource(url).copyTo(Files.asByteSink(file));
 
     System.out.println("done.");
+    String fileName = file.toString();
+    try {
+      List<Dashboard1> beans = new CsvToBeanBuilder(new FileReader(fileName))
+        .withType(Dashboard1.class)
+        .withSkipLines(1)
+        .build()
+        .parse();
+
+      beans.forEach(obj -> {
+        System.out.println(obj.toString());
+      });
+    } catch (IOException e) {
+      System.err.printf("Request failed unexpectedly due to IOException: %s%n", e);
+    }
+
+
   }
 
   public static void main(String[] args) {
