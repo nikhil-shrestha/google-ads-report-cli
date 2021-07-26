@@ -137,14 +137,13 @@ public class RunInventoryReport {
                 System.out.println(obj.toString());
                 try {
                     DashboardReport dashboardReport = new DashboardReport();
-                    dashboardReport.setId(1);
-                    dashboardReport.setDimension_DATE(obj.getDate());
-                    dashboardReport.setTOTAL_INVENTORY_LEVEL_UNFILLED_IMPRESSIONS(obj.getUnfilledImpression());
-                    dashboardReport.setAD_SERVER_CLICKS(obj.getClicks());
-                    dashboardReport.setTOTAL_AD_REQUESTS(obj.getAdRequest());
-                    dashboardReport.setTOTAL_LINE_ITEM_LEVEL_CPM_AND_CPC_REVENUE(obj.getRevenue());
-                    dashboardReport.setTOTAL_RESPONSES_SERVED(obj.getServed());
-                    dashboardReport.setTOTAL_LINE_ITEM_LEVEL_IMPRESSIONS(obj.getImpression());
+                    dashboardReport.setDimensionDate(obj.getDate());
+                    dashboardReport.setUnfilledImpression(obj.getUnfilledImpression());
+                    dashboardReport.setImpression(obj.getImpression());
+                    dashboardReport.setRevenue(obj.getRevenue());
+                    dashboardReport.setAdRequest(obj.getAdRequest());
+                    dashboardReport.setResponses(obj.getServed());
+                    dashboardReport.setAdClicks(obj.getClicks());
                     dashboardReportRepository.save(dashboardReport);
                 } catch (Exception e) {
                     System.out.println("Error in data save");
