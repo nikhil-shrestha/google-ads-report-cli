@@ -10,7 +10,7 @@ public class DashboardReport {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @Column(name = "dimension_dATE")
+  @Column(name = "dimension_date")
   private Date dimensionDate;
 
   @Column(name = "unfilled_impression")
